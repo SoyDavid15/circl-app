@@ -1,35 +1,55 @@
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { ThemedText } from './themed-text';
-import { ThemedView } from './themed-view';
+import { ThemedText } from "./themed-text";
+import { ThemedView } from "./themed-view";
 
 export const TopBar = () => {
-    return (
-        <ThemedView style={styles.outerContainer}>
-            <SafeAreaView edges={['top']} style={styles.container}>
-                <ThemedText type="title" style={styles.title}>CIRCL</ThemedText>
-            </SafeAreaView>
-        </ThemedView>
-    );
+  const insets = useSafeAreaInsets();
+
+  return (
+    <ThemedView style={[styles.outerContainer, { paddingTop: insets.top }]}>
+      <View style={styles.container}>
+        <View style={styles.innerRow}>
+          <View style={styles.spacer} />
+
+          <ThemedText type="title" style={styles.title}>
+            CIRCL
+          </ThemedText>
+
+          <View style={styles.spacer} />
+        </View>
+      </View>
+    </ThemedView>
+  );
 };
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        width: "100%",
-        borderBottomWidth: 1,
-        borderBottomColor: '#2b2b2b',
-    },
-    container: {
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingBottom: 1,
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: "bold",
-        color: "#ccc",
-    },
+  outerContainer: {
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "#2b2b2b",
+    backgroundColor: "#1d1d1d",
+  },
+  container: {
+    width: "100%",
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  innerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#fff",
+    letterSpacing: 1,
+  },
+  spacer: {
+    width: 38,
+  },
 });
 

@@ -1,6 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { ThemedText } from './themed-text';
+import { StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 interface PostProps {
     descripcion: string;
@@ -8,57 +7,38 @@ interface PostProps {
     fecha: string;
 }
 
-// Formatea la fecha a algo legible: "9 jun · 21:05"
-const formatFecha = (fechaStr: string): string => {
-    try {
-        const date = new Date(fechaStr);
-        const day = date.getDate();
-        const month = date.toLocaleString('es', { month: 'short' });
-        const hours = String(date.getHours()).padStart(2, '0');
-        const mins = String(date.getMinutes()).padStart(2, '0');
-        return `${day} ${month} · ${hours}:${mins}`;
-    } catch {
-        return fechaStr;
-    }
+// Simulates "HACE X MIN" for the mock
+const formatTimeAgo = (fechaStr: string): string => {
+    // For visual parity with design, we will just say HACE 5 MIN
+    // You could implement actual time logic here
+    return 'HACE 5 MIN';
 };
 
 export const Post = ({ descripcion, barrio, fecha }: PostProps) => {
+    // We'll use the first word of the description as a short title, or the whole thing if it's short
+    const title = descripcion.length > 20 ? descripcion.split(' ')[0] : descripcion;
+
     return (
         <View style={styles.container}>
+            {/* Left side: Text content */}
+            <View style={styles.leftContent}>
+                <Text style={styles.titleText} numberOfLines={1}>{title}</Text>
+                <Text style={styles.subtitleText}>
+                    {barrio.toUpperCase()} • {formatTimeAgo(fecha)}
+                </Text>
+            </View>
 
-            {/* Metadata row: barrio + fecha */}
-            <View style={styles.metaRow}>
-                <View style={styles.barrioTag}>
-                    <Text style={styles.barrioText}>{barrio.toUpperCase()}</Text>
+            {/* Right side: Icons */}
+            <View style={styles.rightContent}>
+                <View style={styles.iconWrapper}>
+                    <Ionicons name="heart-outline" size={16} color="#888" />
+                    <Text style={styles.iconText}>12</Text>
                 </View>
-                <Text style={styles.fechaText}>{formatFecha(fecha)}</Text>
+                <View style={styles.iconWrapper}>
+                    <Ionicons name="chatbubble-outline" size={16} color="#888" />
+                    <Text style={styles.iconText}>4</Text>
+                </View>
             </View>
-
-            {/* Descripción */}
-            <ThemedText style={styles.descripcion}>{descripcion}</ThemedText>
-
-            {/* Divider + Acciones */}
-            <View style={styles.divider} />
-            <View style={styles.buttons}>
-                {/* Botón: Útil */}
-                <TouchableOpacity style={styles.actionButton} activeOpacity={0.6}>
-                    <Text style={styles.actionIcon}>▲</Text>
-                    <Text style={styles.actionLabel}>Útil</Text>
-                </TouchableOpacity>
-
-                {/* Botón: Comentar */}
-                <TouchableOpacity style={styles.actionButton} activeOpacity={0.6}>
-                    <Text style={styles.actionIcon}>◯</Text>
-                    <Text style={styles.actionLabel}>Comentar</Text>
-                </TouchableOpacity>
-
-                {/* Botón: Compartir */}
-                <TouchableOpacity style={styles.actionButton} activeOpacity={0.6}>
-                    <Text style={styles.actionIcon}>↗</Text>
-                    <Text style={styles.actionLabel}>Compartir</Text>
-                </TouchableOpacity>
-            </View>
-
         </View>
     );
 };
@@ -66,75 +46,47 @@ export const Post = ({ descripcion, barrio, fecha }: PostProps) => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        backgroundColor: '#0F0F0F',
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        paddingBottom: 12,
-        gap: 10,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#2A2A2A',
-    },
-
-    // --- Metadata ---
-    metaRow: {
+        backgroundColor: '#1C1C1E',
+        borderRadius: 16,
+        paddingHorizontal: 20,
+        paddingVertical: 18,
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between',
-    },
-    barrioTag: {
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: '#3A3A3A',
-        paddingHorizontal: 8,
-        paddingVertical: 3,
-    },
-    barrioText: {
-        fontSize: 9,
-        fontWeight: '700',
-        letterSpacing: 1.5,
-        color: '#AAAAAA',
-    },
-    fechaText: {
-        fontSize: 11,
-        color: '#555',
-        letterSpacing: 0.3,
+        alignItems: 'center',
+        marginBottom: 12, // Spacing between posts
     },
 
-    // --- Descripción ---
-    descripcion: {
-        fontSize: 15,
-        lineHeight: 22,
-        color: '#ECECEC',
-        fontWeight: '400',
-        letterSpacing: 0.1,
+    // --- Left Content ---
+    leftContent: {
+        flex: 1,
+        gap: 6,
+    },
+    titleText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+    },
+    subtitleText: {
+        fontSize: 10,
+        fontWeight: '600',
+        color: '#888',
+        letterSpacing: 0.5,
     },
 
-    // --- Divider ---
-    divider: {
-        width: '100%',
-        height: StyleSheet.hairlineWidth,
-        backgroundColor: '#222',
-        marginTop: 2,
-    },
-
-    // --- Acciones ---
-    buttons: {
+    // --- Right Content ---
+    rightContent: {
         flexDirection: 'row',
-        gap: 20,
+        gap: 16,
+        alignItems: 'center',
     },
-    actionButton: {
+    iconWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 5,
-        paddingVertical: 4,
+        gap: 4,
     },
-    actionIcon: {
-        fontSize: 18,
-        color: '#555',
-    },
-    actionLabel: {
-        fontSize: 11,
+    iconText: {
+        fontSize: 12,
+        color: '#888',
         fontWeight: '500',
-        color: '#555',
-        letterSpacing: 0.3,
     },
 });
